@@ -1,9 +1,7 @@
 (ns advent-of-code-2018.core
-  (:gen-class)
   (:require advent-of-code-2018.day-1))
 
-(defn -main
-  [& args]
+(defn -main [& args]
   (let [[puzzle] args]
     (println
      (case puzzle
