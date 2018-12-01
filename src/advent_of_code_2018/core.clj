@@ -1,7 +1,10 @@
 (ns advent-of-code-2018.core
-  (:gen-class))
+  (:gen-class)
+  (:require advent-of-code-2018.day-1))
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (println
+   (case args
+     '("1") (advent-of-code-2018.day-1/solve-part-1)
+     "Please, select the puzzle")))
