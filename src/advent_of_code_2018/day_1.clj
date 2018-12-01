@@ -9,8 +9,7 @@
 
 (defn sum [coll] (reduce + coll))
 
-(defn first-repeated-frequency
-  [coll]
+(defn first-repeated-frequency [coll]
   (loop [in coll
          original-input coll
          current-frequency 0
@@ -22,15 +21,13 @@
         (contains? found-frequencies next-frequency) next-frequency
         :else (recur remaining original-input next-frequency (conj found-frequencies next-frequency))))))
 
-(defn solve-part-1
-  []
+(defn solve-part-1 []
   (-> "day_1.txt"
       read-input
       parse
       sum))
 
-(defn solve-part-2
-  []
+(defn solve-part-2 []
   (-> "day_1.txt"
       read-input
       parse
