@@ -24,8 +24,14 @@
 
 (defn solve-part-1
   []
-  (sum (parse (read-input "day_1.txt"))))
+  (-> "day_1.txt"
+      read-input
+      parse
+      sum))
 
 (defn solve-part-2
   []
-  (first-repeated-frequency (parse (read-input "day_1.txt"))))
+  (-> "day_1.txt"
+      read-input
+      parse
+      first-repeated-frequency))
