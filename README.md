@@ -1,36 +1,14 @@
-# advent-of-code-2018
+# AdventOfCode2018
 
-FIXME: description
-
-## Installation
-
-Download from http://example.com/FIXME.
+Advent of Code 2018 solutions in Clojure.
 
 ## Usage
 
-FIXME: explanation
+Pass number of the puzzle as the first argument to the `lein run` command. Examples:
 
-    $ java -jar advent-of-code-2018-0.1.0-standalone.jar [args]
+    $ lein run 1-1
+    $ lein run 1-2
 
-## Options
+## Testing
 
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2018 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+    $ lein test
