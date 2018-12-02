@@ -1,9 +1,5 @@
 (ns advent-of-code-2018.day-1
-  (:require [clojure.java.io :as io]))
-
-(defn read-input [filename]
-  (with-open [r (io/reader (io/resource filename))]
-    (doall (line-seq r))))
+  (:require [advent-of-code-2018.input :as input]))
 
 (defn parse [coll] (map #(Integer/parseInt %) coll))
 
@@ -23,12 +19,12 @@
 
 (defn solve-part-1 []
   (-> "day_1.txt"
-      read-input
+      input/read-lines
       parse
       sum))
 
 (defn solve-part-2 []
   (-> "day_1.txt"
-      read-input
+      input/read-lines
       parse
       first-repeated-frequency))
