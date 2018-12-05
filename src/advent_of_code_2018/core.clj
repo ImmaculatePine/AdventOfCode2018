@@ -2,7 +2,8 @@
   (:require advent-of-code-2018.day-1)
   (:require advent-of-code-2018.day-2)
   (:require advent-of-code-2018.day-3)
-  (:require advent-of-code-2018.day-4))
+  (:require advent-of-code-2018.day-4)
+  (:require advent-of-code-2018.day-5))
 
 (defn -main [& args]
   (let [[puzzle] args]
@@ -16,5 +17,6 @@
        "3-2" (advent-of-code-2018.day-3/solve-part-2)
        "4-1" (advent-of-code-2018.day-4/solve-part-1)
        "4-2" (advent-of-code-2018.day-4/solve-part-2)
+       "5-1" (advent-of-code-2018.day-5/solve-part-1)
        nil "Please, select the puzzle"
        "Unknown puzzle number"))))
