@@ -17,6 +17,9 @@
 (defn next-month [month day]
   (if (last-day? month day) (+ month 1) month))
 
+(defn max-by [coll]
+  (key (apply max-key val coll)))
+
 (defn parse-minute [s]
   (let [[_ _ smonth sday shour sminute] (re-matches #"(\d+)-(\d+)-(\d+) (\d+):(\d+)" s)
         month (Integer/parseInt smonth)
@@ -112,19 +115,24 @@
            (fn [[_ minutes]] (minutes->asleep minutes))
            shifts)))
 
-(defn most-sleepy-minute [shifts]
-  (key
-   (apply max-key val
-          (reduce
-           (fn [out, i]
-             (update
-              out
-              i
-              (fn [val]
-                (+ (or val 0) (count (filter #(= (% i) false) shifts))))))
+(defn sleeping-rate-by-minutes [shifts]
+  (let [data (vals shifts)]
+    (reduce
+     (fn [out, i]
+       (update
+        out
+        i
+        (fn [val]
+          (+ (or val 0) (count (filter #(= (% i) false) data))))))
 
-           {}
-           (range 60)))))
+     {}
+     (range 60))))
+
+(defn most-sleepy-minute [shifts]
+  (let [rate (sleeping-rate-by-minutes shifts)
+        minute (max-by rate)
+        times (rate minute)]
+    [minute, times]))
 
 (defn schedule->minutes-asleep [schedule]
   (into {}
@@ -145,10 +153,22 @@
 (defn strategy-1 [coll]
   (let [schedule (schedule->by-minutes (input->schedule coll))
         [id shifts] (most-sleeping-guard schedule)
-        minute (most-sleepy-minute (vals shifts))]
+        [minute _] (most-sleepy-minute shifts)]
+    (* id minute)))
+
+(defn strategy-2 [coll]
+  (let [schedule (schedule->by-minutes (input->schedule coll))
+        all (map (fn [[id shifts]] [id (most-sleepy-minute shifts)]) schedule)
+        sorted (sort-by (fn [[_ [_ times]]] times) all)
+        [id [minute _]] (last sorted)]
     (* id minute)))
 
 (defn solve-part-1 []
   (-> "day_4.txt"
       input/read-lines
       strategy-1))
+
+(defn solve-part-2 []
+  (-> "day_4.txt"
+      input/read-lines
+      strategy-2))

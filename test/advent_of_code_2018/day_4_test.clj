@@ -44,3 +44,7 @@
 (deftest strategy-1-test
   (testing "ID of the most sleepy guard * the most sleepy minute"
     (is (= 240 (strategy-1 input)))))
+
+(deftest strategy-2-test
+  (testing "ID of the guard with the most sleeping minute * number of that minute"
+    (is (= 4455 (strategy-2 input)))))
