@@ -4,6 +4,19 @@
 
 (def input "dabAcCaCBAcCcaDA")
 
-(deftest opposite-polarity-shrink-test
-  (testing "Returns new polymer when all units with opposite polarities are removed"
-    (is (= (opposite-polarity-shrink input) "dabCBAcaDA"))))
+(deftest shrink-test
+  (testing "Removes units with the opposite polarities"
+    (is (= (shrink input) "dabCBAcaDA"))))
+
+(deftest remove-and-shrink-test
+  (testing "Removes particular letter and shrinks the resulting string"
+    (is (= (remove-and-shrink input "a") "dbCBcD"))
+    (is (= (remove-and-shrink input "b") "daCAcaDA"))
+    (is (= (remove-and-shrink input "c") "daDA"))
+    (is (= (remove-and-shrink input "d") "abCBAc"))))
+
+(deftest shortest-structure-test
+  (testing "Finds the shortest possible structure"
+    (is (=
+         (shortest-structure input)
+         ["c" 4 "daDA"]))))
