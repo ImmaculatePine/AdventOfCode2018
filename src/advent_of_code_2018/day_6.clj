@@ -49,10 +49,17 @@
         [matched-center-coords _] matched-center]
     (if (empty? similar-centers) matched-center-coords nil)))
 
-(defn distribute [points centers]
+(defn distribute-by-closest-center [points centers]
   (group-by
    #(closest-center % centers)
    points))
+
+(defn sum-distances [point centers]
+  (let [distances (distances-from-centers point centers)]
+    (reduce (fn [s [_ distance]] (+ s distance)) 0 distances)))
+
+(defn distribute-by-distances [points centers]
+  (map (fn [point] [point (sum-distances point centers)]) points))
 
 (defn border? [[px py] [[min-x min-y] [max-x max-y]]]
   (or
@@ -68,12 +75,25 @@
   (let [centers (map parse coll)
         corners (plane-corners centers)
         points (plane corners)
-        distribution (distribute points centers)
+        distribution (distribute-by-closest-center points centers)
         finite-areas (remove (fn [[_ points]] (infinite? points corners)) distribution)
         sorted-areas (sort-by (fn [[_ v]] (count v)) finite-areas)]
     (count (val (last sorted-areas)))))
+
+(defn safe-region [coll max-distance]
+  (let [centers (map parse coll)
+        corners (plane-corners centers)
+        points (plane corners)
+        distribution (distribute-by-distances points centers)
+        filtered-distribution (filter (fn [[_ d]] (< d max-distance)) distribution)]
+    (count filtered-distribution)))
 
 (defn solve-part-1 []
   (-> "day_6.txt"
       input/read-lines
       largest-finite-area))
+
+(defn solve-part-2 []
+  (-> "day_6.txt"
+      input/read-lines
+      (safe-region 10000)))
