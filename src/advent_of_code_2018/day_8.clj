@@ -12,10 +12,22 @@
      :else (let [[children remaining] (parse input)]
              (parse (conj acc children) (- c 1) m remaining)))))
 
+(defn score [coll]
+  (let [children (filter vector? coll)
+        meta (filter integer? coll)
+        valuable-children (map #(nth children (- % 1) []) meta)]
+    (if (empty? children)
+      (reduce + meta)
+      (reduce + (map score valuable-children)))))
+
 (defn sum-metadata [coll]
   (let [[tree _] (parse coll)
         metadata (flatten tree)]
     (reduce + metadata)))
+
+(defn root-node-value [coll]
+  (let [[tree _] (parse coll)]
+    (score tree)))
 
 (defn ->integers [coll]
   (doall (map #(Integer/parseInt %) coll)))
@@ -25,3 +37,9 @@
       input/read-words
       ->integers
       sum-metadata))
+
+(defn solve-part-2 []
+  (-> "day_8.txt"
+      input/read-words
+      ->integers
+      root-node-value))

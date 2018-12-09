@@ -7,3 +7,7 @@
 (deftest sum-metadata-test
   (testing "Returns sum of nodes metadata"
     (is (= 138 (sum-metadata input)))))
+
+(deftest root-node-value-test
+  (testing "Returns score of the root node"
+    (is (= 66 (root-node-value input)))))

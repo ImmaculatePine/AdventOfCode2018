@@ -27,5 +27,6 @@
        "7-1" (advent-of-code-2018.day-7/solve-part-1)
        "7-2" (advent-of-code-2018.day-7/solve-part-2)
        "8-1" (advent-of-code-2018.day-8/solve-part-1)
+       "8-2" (advent-of-code-2018.day-8/solve-part-2)
        nil "Please, select the puzzle"
        "Unknown puzzle number"))))
