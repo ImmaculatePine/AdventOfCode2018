@@ -30,5 +30,6 @@
        "8-1" (advent-of-code-2018.day-8/solve-part-1)
        "8-2" (advent-of-code-2018.day-8/solve-part-2)
        "9-1" (advent-of-code-2018.day-9/solve-part-1)
+       "9-2" (advent-of-code-2018.day-9/solve-part-2)
        nil "Please, select the puzzle"
        "Unknown puzzle number"))))
