@@ -8,9 +8,14 @@
         [_ middle] (re-matches #"\.*#(.+)#\.*" s)]
     (str "#" middle "#")))
 
-(defn string->state [s]
-  (let [coll (str/split s #"")]
-    (zipmap (range 0 (count coll)) coll)))
+(defn string->state
+  ([s]
+   (string->state s 0))
+
+  ([s n]
+   (let [coll (str/split s #"")
+         size (count coll)]
+     (zipmap (range n (+ n size)) coll))))
 
 (defn parse-initial-state [s]
   (let [[_ state] (re-matches #"initial state: (.+)" s)]
@@ -37,6 +42,27 @@
      (- from 1) "." (- from 2) "." (- from 3) "." (- from 4) "."
      (+ to 1) "." (+ to 2) "." (+ to 3) "." (+ to 4) ".")))
 
+(defn trim-left [state from]
+  (loop [i from
+         out state]
+    (let [v (state i)]
+      (if (= v ".")
+        (recur (inc i) (dissoc out i))
+        out))))
+
+(defn trim-right [state to]
+  (loop [i to
+         out state]
+    (let [v (state i)]
+      (if (= v ".")
+        (recur (dec i) (dissoc out i))
+        out))))
+
+(defn trim-state [state]
+  (let [[from to] (borders state)
+        trimmed-left (trim-left state from)]
+    (trim-right trimmed-left to)))
+
 (defn pattern [n state]
   (str/join (reduce
              (fn [acc i] (conj acc (or (state i) ".")))
@@ -53,7 +79,7 @@
     (loop [n from
            out {}]
       (if (= n to)
-        out
+        (trim-state out)
         (recur (inc n) (assoc out n (transform state rules n)))))))
 
 (defn total-alive-numbers [state]
@@ -62,13 +88,30 @@
 
 (defn emulate [state rules n]
   (loop [i 0
+         history #{(state->string state)}
          out state]
     (if (= i n)
       [out (total-alive-numbers out)]
-      (recur (inc i) (next-generation out rules)))))
+      (let [new-state (next-generation out rules)
+            new-state-string (state->string new-state)
+            already-happen (contains? history new-state-string)
+            new-history (if already-happen history (conj history new-state-string))]
+        (if already-happen
+          (let [[from _] (borders new-state)
+                steps-left (- n i 1)
+                final-from (+ from steps-left)
+                final-state (string->state (state->string new-state) final-from)]
+            [final-state (total-alive-numbers final-state)])
+          (recur (inc i) new-history new-state))))))
 
 (defn solve-part-1 []
   (let [input (input/read-lines "day_12.txt")
         [state rules] (parse-input input)
         [_ count] (emulate state rules 20)]
+    count))
+
+(defn solve-part-2 []
+  (let [input (input/read-lines "day_12.txt")
+        [state rules] (parse-input input)
+        [_ count] (emulate state rules 50000000000)]
     count))
