@@ -92,19 +92,35 @@
 
 (defn crashes [carts]
   (let [grouped (group-by (fn [{:keys [x y]}] [x y]) carts)
-        crashed (filter (fn [[_ coll]] (> (count coll) 1)) grouped)]
-    (keys crashed)))
+        crashed (filter (fn [[_ coll]] (> (count coll) 1)) grouped)
+        coordinates (set (keys crashed))
+        survivals (remove (fn [{x :x y :y}] (contains? coordinates [x y])) carts)]
+    [coordinates survivals]))
 
 (defn first-crash-location [s]
   (let [[routes carts] (parse s)]
     (loop [carts carts]
       (let [new-carts (tick-all routes carts)
-            crashes (crashes new-carts)]
+            [crashes _] (crashes new-carts)]
         (if (empty? crashes)
           (recur new-carts)
           crashes)))))
+
+(defn last-non-crashed-location [s]
+  (let [[routes carts] (parse s)]
+    (loop [carts carts]
+      (let [new-carts (tick-all routes carts)
+            [_ survivals] (crashes new-carts)]
+        (if (= (count survivals) 1)
+          (let [[{x :x y :y}] survivals] [x y])
+          (recur survivals))))))
 
 (defn solve-part-1 []
   (-> "day_13.txt"
       input/read-raw
       first-crash-location))
+
+(defn solve-part-2 []
+  (-> "day_13.txt"
+      input/read-raw
+      last-non-crashed-location))

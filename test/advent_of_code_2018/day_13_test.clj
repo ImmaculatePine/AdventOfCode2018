@@ -8,8 +8,8 @@
 
 (deftest first-crash-location-test
   (is (=
-       '([0 3])
+       #{[0 3]}
        (first-crash-location input-1)))
   (is (=
-       '([7 3])
+       #{[7 3]}
        (first-crash-location input-2))))
