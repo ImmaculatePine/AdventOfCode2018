@@ -3,6 +3,7 @@
   (:require [clojure.string :as str]))
 
 (def initial-recipes {0 3, 1 7})
+(def initial-currents [0 1])
 
 (defn parse [s]
   (let [coll (str/split s #"")
@@ -34,10 +35,10 @@
         new-coll (add-recipes coll new-recipes)
         size (count new-coll)
         new-idx [(adjust-idx (+ 1 val1 idx1) size) (adjust-idx (+ 1 val2 idx2) size)]]
-    [new-coll new-idx]))
+    [new-coll new-idx new-recipes]))
 
 (defn recipes
-  ([n] (recipes initial-recipes [0 1] n))
+  ([n] (recipes initial-recipes initial-currents n))
 
   ([recipes currents n]
    (loop [coll recipes
@@ -47,12 +48,46 @@
        (let [[new-coll new-currents] (combine-recipes coll currents)]
          (recur new-coll new-currents))))))
 
+(defn compare-new-and-remaining [all-expected remaining new-recipes found]
+  (loop [remaining remaining
+         new-recipes new-recipes
+         found found]
+    (let [[first-remaining & other-remaining] remaining
+          [first-new & other-new] new-recipes]
+      (cond
+        (empty? remaining) [remaining found]
+        (empty? new-recipes) [remaining found]
+        (= first-remaining first-new) (recur other-remaining other-new true)
+        (and (not found) (not (empty? other-new))) (recur remaining other-new false)
+        found (recur all-expected new-recipes false)
+        :else (recur all-expected other-new false)))))
+
 (defn next-10-recipes-after [n]
   (let [recipes (recipes (+ n 10))]
     (str/join (last-n-recipes recipes 10))))
+
+(defn recipes-num-before [s]
+  (let [size (count s)
+        expected (parse s)]
+    (loop [coll initial-recipes
+           currents initial-currents
+           remaining expected
+           found false]
+      (if (empty? remaining)
+        (if (= (last-n-recipes coll size) expected)
+          (- (count coll) size)
+          (- (count coll) size 1))
+        (let [[new-coll new-currents new-recipes] (combine-recipes coll currents)
+              [new-remaining new-found] (compare-new-and-remaining expected remaining new-recipes found)]
+          (recur new-coll new-currents new-remaining new-found))))))
 
 (defn solve-part-1 []
   (-> "day_14.txt"
       input/read-raw
       Integer/parseInt
       next-10-recipes-after))
+
+(defn solve-part-2 []
+  (-> "day_14.txt"
+      input/read-raw
+      recipes-num-before))
